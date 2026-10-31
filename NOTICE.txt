@@ -1,0 +1,1 @@
+ClipQueue is intended for authorized video files and user-owned media. This project does not extract videos from third-party platform webpages, bypass paywalls, authentication, or DRM.

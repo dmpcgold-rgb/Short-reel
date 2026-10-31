@@ -21,6 +21,11 @@ public final class UrlRules {
         } catch (Exception e) { return false; }
     }
 
+    /** Candidate only: the HTTP response and player must still verify actual video content. */
+    public static boolean isDirectVideoCandidate(String url) {
+        return isHttpsUrl(url) && !isPlatformPage(url);
+    }
+
     public static boolean isPlatformPage(String url) {
         try {
             URI uri = URI.create(url.trim());

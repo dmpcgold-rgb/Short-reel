@@ -46,6 +46,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 /** Offline-first playlist manager. Downloads only direct, authorized video URLs. */
 public class MainActivity extends Activity {
     private static final int PICK_VIDEO = 22;
+    public static final String EXTRA_DOWNLOAD_DIRECT_VIDEO = "at.dmpc.clipqueue.DOWNLOAD_DIRECT_VIDEO";
     private static final int BG = 0xFF0A0F1C;
     private static final int PANEL = 0xFF151D2C;
     private static final int MINT = 0xFF70E7C6;
@@ -76,6 +77,10 @@ public class MainActivity extends Activity {
             if (shared != null) draftUrl = findUrl(shared);
         }
         render();
+        if (state == null && intent.hasExtra(EXTRA_DOWNLOAD_DIRECT_VIDEO)) {
+            String direct = intent.getStringExtra(EXTRA_DOWNLOAD_DIRECT_VIDEO);
+            if (direct != null) startDownload(direct.trim());
+        }
         // A device rotation must not queue a second copy of the same shared file.
         if (state == null && Intent.ACTION_SEND.equals(intent.getAction()) && intent.getType() != null && intent.getType().startsWith("video/")) {
             importSharedVideo(intent);
@@ -85,6 +90,16 @@ public class MainActivity extends Activity {
     @Override protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
         setIntent(intent);
+        if (intent.hasExtra(EXTRA_DOWNLOAD_DIRECT_VIDEO)) {
+            String direct = intent.getStringExtra(EXTRA_DOWNLOAD_DIRECT_VIDEO);
+            if (direct != null) {
+                draftUrl = direct.trim();
+                urlField = null;
+                render();
+                startDownload(draftUrl);
+            }
+            return;
+        }
         if (Intent.ACTION_SEND.equals(intent.getAction()) && "text/plain".equals(intent.getType())) {
             String shared = intent.getStringExtra(Intent.EXTRA_TEXT);
             if (shared != null) {
@@ -160,6 +175,15 @@ public class MainActivity extends Activity {
         bmp.topMargin = dp(10);
         urlPanel.addView(bookmarkButton, bmp);
         bookmarkButton.setOnClickListener(v -> addReelShortLink(urlField.getText().toString().trim()));
+
+        TextView onlineHint = text("Direkte freigegebene Video-URL (z. B. MP4): online ansehen und zum Herunterladen lange auf das Video drücken. ReelShort-Serienlinks sind keine Videodateien.", 12, MUTED, false);
+        onlineHint.setPadding(0, dp(14), 0, dp(7));
+        urlPanel.addView(onlineHint);
+        Button onlinePreview = action("▶ Online-Videodatei ansehen", false);
+        LinearLayout.LayoutParams onlineParams = new LinearLayout.LayoutParams(-1, dp(48));
+        onlineParams.topMargin = dp(6);
+        urlPanel.addView(onlinePreview, onlineParams);
+        onlinePreview.setOnClickListener(v -> previewOnlineVideo(urlField.getText().toString().trim()));
         downloadButton = action("↓ Freigegebene Videodatei speichern", false);
         LinearLayout.LayoutParams dbp = new LinearLayout.LayoutParams(-1, dp(48));
         dbp.topMargin = dp(10);
@@ -454,8 +478,25 @@ public class MainActivity extends Activity {
         return "Video";
     }
 
+    private void previewOnlineVideo(String rawUrl) {
+        draftUrl = rawUrl;
+        if (!UrlRules.isDirectVideoCandidate(rawUrl)) {
+            new AlertDialog.Builder(this)
+                    .setTitle("Kein direkter Video-Link")
+                    .setMessage("ClipQueue kann nur direkte HTTPS-Videodateien ansehen. ReelShort-Serienlinks, Streams mit Kopierschutz und Web-Seiten lassen sich hier nicht als Videodatei öffnen.")
+                    .setPositiveButton("OK", null).show();
+            return;
+        }
+        Intent preview = new Intent(this, OnlineVideoActivity.class);
+        preview.putExtra(OnlineVideoActivity.EXTRA_URL, rawUrl);
+        startActivity(preview);
+    }
+
     private void startDownload(String rawUrl) {
         draftUrl = rawUrl;
+        if (urlField != null && !rawUrl.equals(urlField.getText().toString().trim())) {
+            urlField.setText(rawUrl);
+        }
         if (UrlRules.isPlatformPage(rawUrl)) {
             new AlertDialog.Builder(this).setTitle("Keine herunterladbare Videodatei")
                 .setMessage("Ein ReelShort-Serienlink ist keine Videodatei. Du kannst ihn oben merken, aber nicht offline herunterladen. Verwende ausschließlich offiziell freigegebene Downloads als Datei.")

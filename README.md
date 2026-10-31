@@ -1,6 +1,6 @@
 # ClipQueue — ReelShort-Merkliste und Offline-Player (Android 10+)
 
-**Version 1.2.0 — Android-Projekt.**
+**Version 1.3.0 — Android-Projekt.**
 
 ## Was geht?
 
@@ -8,6 +8,13 @@
 - **Offline-Playlist:** Serienfolgen in beliebiger Reihenfolge speichern, automatisch hintereinander spielen, hoch/runter wischen, Pause, Fortschrittsleiste, Wiederholung. Die Reihenfolge bleibt nach dem Neustart erhalten.
 - **ReelShort-Serien merken:** Von reelshort.com geteilte Links einfügen, mit selbst gewähltem Serientitel speichern und später in ReelShort öffnen. **Ein gemerkter Link ist kein heruntergeladenes Video und funktioniert nur online.**
 - **Direkte freigegebene Videodatei:** HTTPS-Links, die wirklich eine Videodatei statt einer ReelShort-Webseite zurückgeben, können ebenfalls unter Filme/ClipQueue heruntergeladen werden.
+
+## Neu in Version 1.3.0: Freigegebene Online-Videodateien
+
+- Direkte, freigegebene HTTPS-Videodatei über den Link-Eingabebereich **„▶ Online-Videodatei ansehen“** öffnen.
+- Im Online-Player das Video **lang drücken → „Video herunterladen“**. Nach Bestätigung startet der bestehende geprüfte Download nach **Filme/ClipQueue** und ergänzt die Offline-Playlist.
+- Funktioniert nur, wenn die Ziel-URL tatsächlich eine frei abrufbare Videodatei liefert. Eine normale Web-Seite oder ein ReelShort-Serienlink genügt nicht.
+- Keine Erweiterung von Rechten: Ein in ReelShort gekaufter oder kostenlos ansehbarer Stream ist nicht automatisch zum separaten Dateidownload freigegeben.
 
 ## Neu in Version 1.2.0: Download per langem Drücken
 
@@ -27,7 +34,7 @@ ReelShort-Seitenlinks oder geschützte Streaming-Folgen werden **nicht** in MP4 
 1. Projekt als Android-Studio-Projekt öffnen, JDK 17 und Android SDK 36 bereitstellen.
 2. `gradle :app:testDebugUnitTest :app:assembleDebug` ausführen oder GitHub Actions Workflow `Android APK` starten.
 3. GitHub Actions bietet die Debug-APK unter `ClipQueue-Android-Debug-APK` an.
-4. Diese Projektversion wurde hier **nicht mit Android SDK gebaut und nicht auf einem Samsung getestet**.
+4. Der jeweils aktuelle Buildstatus steht auf der GitHub-Actions-Seite. Ein erfolgreicher Build ist **kein Samsung-Gerätetest**.
 
 ## Technik
 

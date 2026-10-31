@@ -1,13 +1,21 @@
 # ClipQueue — ReelShort-Merkliste und Offline-Player (Android 10+)
 
-**Version 1.3.0 — Android-Projekt.**
+**Version 1.4.0 — Android-Projekt.**
 
 ## Was geht?
 
 - **Videodateien dauerhaft sichern:** Berechtigte, lokal verfügbare Videos (MP4, MOV, M4V, WebM) über Android-Dateiauswahl oder die Android-Teilen-Funktion importieren. Anders als die Vorversion kopiert ClipQueue die Dateien tatsächlich nach **Filme/ClipQueue** (MediaStore) und behält eigene Kopien, selbst wenn die ursprüngliche Quelle später gelöscht wird.
 - **Offline-Playlist:** Serienfolgen in beliebiger Reihenfolge speichern, automatisch hintereinander spielen, hoch/runter wischen, Pause, Fortschrittsleiste, Wiederholung. Die Reihenfolge bleibt nach dem Neustart erhalten.
-- **ReelShort-Serien merken:** Von reelshort.com geteilte Links einfügen, mit selbst gewähltem Serientitel speichern und später in ReelShort öffnen. **Ein gemerkter Link ist kein heruntergeladenes Video und funktioniert nur online.**
+- **ReelShort-Serien merken:** Von reelshort.com geteilte Links einfügen, mit selbst gewähltem Serientitel speichern und später im integrierten ReelShort-Webfenster oder in der offiziellen App öffnen. **Ein gemerkter Link ist kein heruntergeladenes Video und funktioniert nur online.**
 - **Direkte freigegebene Videodatei:** HTTPS-Links, die wirklich eine Videodatei statt einer ReelShort-Webseite zurückgeben, können ebenfalls unter Filme/ClipQueue heruntergeladen werden.
+
+## Neu in Version 1.4.0: ReelShort online öffnen und offizielle Downloads übernehmen
+
+- Gespeicherte ReelShort-Serienlinks öffnen ein eigenes Webfenster. Über **„Offiziell öffnen“** wird die ReelShort-App bzw. der Systembrowser gestartet.
+- **Nur wenn die Website selbst per Download-Link eine herunterladbare Videodatei anbietet**, erscheint eine Bestätigung zum Speichern unter **Downloads/ClipQueue**. Anschließend lässt sich die Datei mit **„Videodateien dauerhaft speichern“** in die Offline-Playlist übernehmen.
+- Der Link https://app.reelshort.com/app-video-share/6aba2fd916bddcf2df00db97 ist als erlaubter ReelShort-Sharing-Link in einem Unit-Test berücksichtigt.
+- **Keine Garantie für Downloads:** Ein bezahlter oder freigeschalteter ReelShort-Stream wird dadurch nicht automatisch als MP4 verfügbar. Es werden keine Streams aus Seiten extrahiert, keine DRM- oder Bezahlschranken umgangen und keine Episodenlisten aus ReelShort ausgelesen.
+- Bei Problemen mit der Website-Darstellung den Button **„Offiziell öffnen“** verwenden. Nicht jede ReelShort-Login-/Videofunktion ist im eingebetteten Browser verfügbar.
 
 ## Neu in Version 1.3.0: Freigegebene Online-Videodateien
 

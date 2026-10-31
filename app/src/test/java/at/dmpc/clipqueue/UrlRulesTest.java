@@ -20,6 +20,7 @@ public class UrlRulesTest {
     @Test public void acceptOnlyOfficialReelShortHost() {
         assertTrue(UrlRules.isReelShortLink("https://reelshort.com/show/123"));
         assertTrue(UrlRules.isReelShortLink("https://www.reelshort.com/series/123"));
+        assertTrue(UrlRules.isReelShortLink("https://app.reelshort.com/app-video-share/6aba2fd916bddcf2df00db97"));
         assertFalse(UrlRules.isReelShortLink("https://evilreelshort.com/show"));
         assertFalse(UrlRules.isReelShortLink("http://reelshort.com/show"));
         assertFalse(UrlRules.isReelShortLink("https://reelshort.com.evil.example/show"));

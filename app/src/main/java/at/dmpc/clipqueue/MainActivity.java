@@ -208,7 +208,21 @@ public class MainActivity extends Activity {
                 item.addView(title);
                 TextView origin = text(clip.source, 12, MUTED, false);
                 origin.setPadding(0, dp(3), 0, dp(7));
+                origin.setText(clip.source + " · Lange drücken: Download");
                 item.addView(origin);
+                item.setContentDescription("Video " + clip.title + ". Lange drücken zum Herunterladen.");
+                item.setOnLongClickListener(v -> {
+                    VideoExporter.confirmSave(this, clip);
+                    return true;
+                });
+                title.setOnLongClickListener(v -> {
+                    VideoExporter.confirmSave(this, clip);
+                    return true;
+                });
+                origin.setOnLongClickListener(v -> {
+                    VideoExporter.confirmSave(this, clip);
+                    return true;
+                });
                 LinearLayout controls = new LinearLayout(this);
                 controls.setOrientation(LinearLayout.HORIZONTAL);
                 Button play = small("▶", () -> play(index));

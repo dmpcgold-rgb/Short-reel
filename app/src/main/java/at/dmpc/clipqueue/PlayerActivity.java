@@ -9,6 +9,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.view.Gravity;
 import android.view.MotionEvent;
+import android.view.ViewConfiguration;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -85,23 +86,50 @@ public class PlayerActivity extends Activity {
         View gesture = new View(this);
         final float[] downY = {0f};
         final float[] downX = {0f};
-        gesture.setOnTouchListener((view, e) -> {
-            if (e.getActionMasked() == MotionEvent.ACTION_DOWN) {
-                downY[0] = e.getY(); downX[0] = e.getX();
-                return true;
-            }
-            if (e.getActionMasked() == MotionEvent.ACTION_UP) {
-                float dy = e.getY() - downY[0];
-                float dx = e.getX() - downX[0];
-                if (Math.abs(dy) > dp(65) && Math.abs(dy) > Math.abs(dx) * 1.2f) {
-                    if (dy < 0) next(); else previous();
-                } else if (Math.abs(dy) < dp(12) && Math.abs(dx) < dp(12)) {
-                    togglePause();
-                    view.performClick();
-                }
-                return true;
-            }
+        final boolean[] longPressed = {false};
+        // Android's standard long-press delay; cancelling on motion preserves swipe navigation.
+        final Runnable longPressAction = gesture::performLongClick;
+        gesture.setOnClickListener(v -> togglePause());
+        gesture.setOnLongClickListener(v -> {
+            int index = player == null ? -1 : player.getCurrentMediaItemIndex();
+            if (index < 0 || index >= clips.size()) return false;
+            VideoExporter.confirmSave(this, clips.get(index));
+            longPressed[0] = true;
             return true;
+        });
+        gesture.setContentDescription("Video: tippen für Pause, lange drücken zum Herunterladen, wischen für nächstes oder vorheriges Video");
+        gesture.setOnTouchListener((view, e) -> {
+            switch (e.getActionMasked()) {
+                case MotionEvent.ACTION_DOWN:
+                    downY[0] = e.getY();
+                    downX[0] = e.getX();
+                    longPressed[0] = false;
+                    handler.postDelayed(longPressAction, ViewConfiguration.getLongPressTimeout());
+                    return true;
+                case MotionEvent.ACTION_MOVE:
+                    if (Math.abs(e.getY() - downY[0]) > dp(12) ||
+                            Math.abs(e.getX() - downX[0]) > dp(12)) {
+                        handler.removeCallbacks(longPressAction);
+                    }
+                    return true;
+                case MotionEvent.ACTION_UP:
+                    handler.removeCallbacks(longPressAction);
+                    if (longPressed[0]) return true;
+                    float dy = e.getY() - downY[0];
+                    float dx = e.getX() - downX[0];
+                    if (Math.abs(dy) > dp(65) && Math.abs(dy) > Math.abs(dx) * 1.2f) {
+                        if (dy < 0) next(); else previous();
+                    } else if (Math.abs(dy) < dp(12) && Math.abs(dx) < dp(12)) {
+                        view.performClick();
+                    }
+                    return true;
+                case MotionEvent.ACTION_POINTER_DOWN:
+                case MotionEvent.ACTION_CANCEL:
+                    handler.removeCallbacks(longPressAction);
+                    return true;
+                default:
+                    return true;
+            }
         });
         root.addView(gesture, new FrameLayout.LayoutParams(-1, -1));
 
@@ -136,7 +164,7 @@ public class PlayerActivity extends Activity {
         bottom.setOrientation(LinearLayout.VERTICAL);
         bottom.setBackground(gradient(0x00000000, 0xE0000000, false));
         TextView tip = new TextView(this);
-        tip.setText("↑ Nächstes Video       ↓ Vorheriges Video");
+        tip.setText("↑ Nächstes   ↓ Vorheriges   ·   Lange drücken: Download");
         tip.setTextColor(0xFFCDD6E1);
         tip.setTextSize(12);
         tip.setGravity(Gravity.CENTER);
@@ -242,6 +270,7 @@ public class PlayerActivity extends Activity {
     }
     @Override protected void onDestroy() {
         handler.removeCallbacks(ticker);
+        handler.removeCallbacksAndMessages(null);
         if (player != null) { player.release(); player = null; }
         super.onDestroy();
     }

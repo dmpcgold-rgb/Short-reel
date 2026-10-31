@@ -1,6 +1,6 @@
 # ClipQueue — ReelShort-Merkliste und Offline-Player (Android 10+)
 
-**Version 1.1.0 — Android-Projekt (Quellcode, noch keine APK).**
+**Version 1.2.0 — Android-Projekt.**
 
 ## Was geht?
 
@@ -8,6 +8,15 @@
 - **Offline-Playlist:** Serienfolgen in beliebiger Reihenfolge speichern, automatisch hintereinander spielen, hoch/runter wischen, Pause, Fortschrittsleiste, Wiederholung. Die Reihenfolge bleibt nach dem Neustart erhalten.
 - **ReelShort-Serien merken:** Von reelshort.com geteilte Links einfügen, mit selbst gewähltem Serientitel speichern und später in ReelShort öffnen. **Ein gemerkter Link ist kein heruntergeladenes Video und funktioniert nur online.**
 - **Direkte freigegebene Videodatei:** HTTPS-Links, die wirklich eine Videodatei statt einer ReelShort-Webseite zurückgeben, können ebenfalls unter Filme/ClipQueue heruntergeladen werden.
+
+## Neu in Version 1.2.0: Download per langem Drücken
+
+- Im Vollbildplayer lange auf das Video drücken oder einen Videoeintrag in der Offline-Playlist gedrückt halten.
+- **„Video herunterladen“** bestätigt die Erstellung einer zusätzlichen lokalen Kopie in **Downloads/ClipQueue**.
+- Der Vorgang läuft außerhalb des UI-Threads, zeigt eine Bestätigung und bereinigt unvollständig kopierte Dateien bei Fehlern.
+- Die ursprüngliche Datei unter **Filme/ClipQueue** und die bisherige Wiedergabeliste bleiben unverändert.
+- Der lange Druck beeinträchtigt weder Wischgesten noch den Tipp zum Pausieren.
+- Die Funktion gilt für **lokal gespeicherte Videodateien in ClipQueue**, nicht für beliebige Videos in der eigenständigen ReelShort-App.
 
 ## Wichtige Einschränkung
 

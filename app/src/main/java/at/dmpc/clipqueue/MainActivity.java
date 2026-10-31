@@ -278,7 +278,7 @@ public class MainActivity extends Activity {
                 card.addView(text(link.title, 15, Color.WHITE, true));
                 card.addView(text("Link gespeichert · Nur online in ReelShort ansehen", 12, MUTED, false));
                 LinearLayout controls = new LinearLayout(this);
-                Button open = small("↗ In ReelShort öffnen", () -> openReelShortLink(link.url));
+                Button open = small("▶ ReelShort ansehen", () -> openReelShortLink(link.url));
                 Button remove = small("✕ Entfernen", () -> removeReelShortLink(index));
                 controls.addView(open, new LinearLayout.LayoutParams(0, dp(42), 2));
                 controls.addView(remove, new LinearLayout.LayoutParams(0, dp(42), 1));
@@ -455,7 +455,9 @@ public class MainActivity extends Activity {
     private void openReelShortLink(String url) {
         if (!UrlRules.isReelShortLink(url)) return;
         try {
-            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url)));
+            Intent view = new Intent(this, ReelShortWebActivity.class);
+            view.putExtra(ReelShortWebActivity.EXTRA_URL, url);
+            startActivity(view);
         } catch (Exception e) {
             Toast.makeText(this, "ReelShort-Link kann nicht geöffnet werden", Toast.LENGTH_LONG).show();
         }

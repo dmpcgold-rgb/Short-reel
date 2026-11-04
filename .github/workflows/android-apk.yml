@@ -32,6 +32,7 @@ jobs:
         run: gradle --no-daemon :app:assembleDebug
       - uses: actions/upload-artifact@v4
         with:
+          retention-days: 1
           name: ClipQueue-Android-Debug-APK
           path: app/build/outputs/apk/debug/app-debug.apk
           if-no-files-found: error
